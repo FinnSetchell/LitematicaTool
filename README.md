@@ -1,4 +1,4 @@
-# Litematica Tool 1.19
+# Litematica Tool 1.18
 
 ## Setup
 
