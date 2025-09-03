@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[47,49)"
+#issueTrackerURL = ""
+license = "CC0-1.0"
+
+[[mods]]
+modId = "litematicatool"
+version = "${version}"
+displayName = "LitematicaTool"
+authors = "FinnDog"
+description = '''
+A simple tool designed to work with Litematica for enhanced schematic management.
+'''
+#logoFile = ""
+
+[[dependencies.litematicatool]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,49)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.litematicatool]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"
