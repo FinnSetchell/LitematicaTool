@@ -68,7 +68,7 @@ publishMods {
         projectId = "n6d6agCA"
         minecraftVersionRange {
             start = "1.20"
-            end = "1.20.2"
+            end = "1.20.4"
         }
     }
 
@@ -77,7 +77,7 @@ publishMods {
         projectId = "494413"
         minecraftVersionRange {
             start = "1.20"
-            end = "1.20.2"
+            end = "1.20.4"
         }
         serverRequired = true
     }
