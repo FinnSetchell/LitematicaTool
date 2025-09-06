@@ -11,6 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.finndog.LitematicaToolMod;
 import com.finndog.LitematicaTool;
+import com.finndog.items.TheStickItem;
 
 @Mod(LitematicaToolMod.MOD_ID)
 public final class LitematicaToolForge {
@@ -18,7 +19,7 @@ public final class LitematicaToolForge {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, LitematicaToolMod.MOD_ID);
     
     // Register the item
-    public static final RegistryObject<Item> THE_STICK = ITEMS.register("the_stick", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> THE_STICK = ITEMS.register("the_stick", () -> new TheStickItem(new Item.Properties().stacksTo(1)));
     
     public LitematicaToolForge() {
         // Register the deferred register

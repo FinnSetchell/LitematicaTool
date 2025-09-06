@@ -1,6 +1,6 @@
 plugins {
     id 'com.gradleup.shadow'
-    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+        id "me.modmuss50.mod-publish-plugin" version "0.8.4"    
 }
 
 loom {
@@ -55,7 +55,6 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-
 File changeLog = rootProject.file("CHANGELOG.md")
 String changelogtext = changeLog.exists() ? changeLog.text : ""
 
@@ -72,8 +71,8 @@ publishMods {
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         projectId = "n6d6agCA"
         minecraftVersionRange {
-            start = "1.21.5"
-            end = "1.21.6"
+            start = "1.20"
+            end = "1.20.4"
         }
     }
 
@@ -81,8 +80,8 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         projectId = "494413"
         minecraftVersionRange {
-            start = "1.21.5"
-            end = "1.21.6"
+            start = "1.20"
+            end = "1.20.4"
         }
         serverRequired = true
     }

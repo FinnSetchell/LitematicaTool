@@ -1,0 +1,6 @@
+{
+  "item.litematicatool.the_stick": "木棒",
+  "item.litematicatool.the_stick.tooltip": "专为与Litematica配合使用而设计的特殊工具",
+  "item.litematicatool.the_stick.tooltip.line2": "用于增强原理图管理。",
+  "item.litematicatool.the_stick.tooltip.line3": "在Litematica中配置：M → 配置 → 通用 → 工具"
+}

@@ -1,3 +1,6 @@
 {
-  "item.litematicatool.the_stick": "The Stick"
+  "item.litematicatool.the_stick": "The Stick",
+  "item.litematicatool.the_stick.tooltip": "A special tool designed to work with Litematica",
+  "item.litematicatool.the_stick.tooltip.line2": "for enhanced schematic management.",
+  "item.litematicatool.the_stick.tooltip.line3": "Configure in Litematica: M → Configuration → Generic → Tool"
 }

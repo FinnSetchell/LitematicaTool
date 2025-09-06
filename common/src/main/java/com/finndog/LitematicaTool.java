@@ -1,10 +1,10 @@
 package com.finndog;
 
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import com.finndog.items.TheStickItem;
 
 public final class LitematicaTool {
     public static final String MOD_ID = "litematicatool";
@@ -15,7 +15,7 @@ public final class LitematicaTool {
     public static void init() {
         // For Fabric: Register items using the built-in registries
         THE_STICK = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(MOD_ID, "the_stick"), 
-            new Item(new Item.Properties()));
+            new TheStickItem(new Item.Properties().stacksTo(1)));
     }
     
     public static void initForge() {

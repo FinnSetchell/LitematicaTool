@@ -1,0 +1,6 @@
+{
+  "item.litematicatool.the_stick": "Le Bâton",
+  "item.litematicatool.the_stick.tooltip": "Un outil spécial conçu pour fonctionner avec Litematica",
+  "item.litematicatool.the_stick.tooltip.line2": "pour une gestion améliorée des schémas.",
+  "item.litematicatool.the_stick.tooltip.line3": "Configurer dans Litematica : M → Configuration → Générique → Outil"
+}
