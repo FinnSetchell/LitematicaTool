@@ -51,6 +51,7 @@ shadowJar {
 remapJar {
     inputFile.set shadowJar.archiveFile
 }
+
 File changeLog = rootProject.file("CHANGELOG.md")
 String changelogtext = changeLog.exists() ? changeLog.text : ""
 
@@ -67,8 +68,8 @@ publishMods {
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         projectId = "n6d6agCA"
         minecraftVersionRange {
-            start = "1.20"
-            end = "1.20.4"
+            start = "1.20.5"
+            end = "1.20.6"
         }
     }
 
@@ -76,8 +77,8 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         projectId = "494413"
         minecraftVersionRange {
-            start = "1.20"
-            end = "1.20.4"
+            start = "1.20.5"
+            end = "1.20.6"
         }
         serverRequired = true
     }
