@@ -10,7 +10,7 @@ public final class LitematicaToolFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         // Register tooltip callback for The Stick item
         ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
-            if (stack.getItem().equals(LitematicaTool.THE_STICK)) {
+            if (stack.getItem().equals(LitematicaTool.THE_STICK.get())) {
                 lines.add(Component.translatable("item.litematicatool.the_stick.tooltip"));
                 lines.add(Component.translatable("item.litematicatool.the_stick.tooltip.line2"));
                 lines.add(Component.translatable("item.litematicatool.the_stick.tooltip.line3"));

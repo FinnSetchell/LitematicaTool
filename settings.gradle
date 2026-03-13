@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'litematicatool'
+rootProject.name = 'LitematicaTool'
 
 include 'common'
 include 'fabric'

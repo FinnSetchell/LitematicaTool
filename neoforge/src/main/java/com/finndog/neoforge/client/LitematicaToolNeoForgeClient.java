@@ -11,7 +11,7 @@ public class LitematicaToolNeoForgeClient {
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        if (event.getItemStack().is(LitematicaTool.THE_STICK)) {
+        if (event.getItemStack().is(LitematicaTool.THE_STICK.get())) {
             event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.litematicatool.the_stick.tooltip"));
             event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.litematicatool.the_stick.tooltip.line2"));
             event.getToolTip().add(net.minecraft.network.chat.Component.translatable("item.litematicatool.the_stick.tooltip.line3"));
