@@ -7,16 +7,20 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import com.finndog.items.TheStickItem;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 public final class LitematicaTool {
     public static final String MOD_ID = "litematicatool";
     
     // Create DeferredRegister for items
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(MOD_ID, Registries.ITEM);
-    
-    // Register items
+
+
+    public static final ResourceKey<Item> THE_STICK_KEY = ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "the_stick"));
+
     public static final RegistrySupplier<Item> THE_STICK = ITEMS.register("the_stick", () -> 
-            new TheStickItem(new Item.Properties().stacksTo(1)));
+            new TheStickItem(new Item.Properties().setId(THE_STICK_KEY).stacksTo(1)));
     
     public static void init() {
         // Register the items deferred register
