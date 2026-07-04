@@ -1,0 +1,165 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*-*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.changelog.outputs.body }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set alpha flag from tag
+        shell: bash
+        run: |
+          if echo "${GITHUB_REF_NAME}" | grep -qP '-alpha\.\d+$'; then
+            sed -i 's|^alphaBuild=.*$|alphaBuild=true|' gradle.properties
+            echo "Alpha build detected"
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        shell: bash
+        run: |
+          set -eo pipefail
+          chmod +x gradlew
+          ./gradlew :fabric:build :neoforge:build
+
+      - name: Extract Changelog
+        id: changelog
+        shell: bash
+        run: |
+          VERSION=$(grep -E '^(mod_version|version)[[:space:]]*=' gradle.properties | head -1 | cut -d= -f2 | tr -d ' \r\n')
+          BODY=$(awk -v v="$VERSION" '$0 ~ "^## [[]?" v "($|[^-])" { capture=1; next } /^## / && capture { exit } capture { print }' CHANGELOG.md)
+          printf "body<<DELIMITER\n%s\nDELIMITER\n" "$BODY" >> "$GITHUB_OUTPUT"
+
+  discord:
+    name: Discord Review
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set alpha flag from tag
+        shell: bash
+        run: |
+          if echo "${GITHUB_REF_NAME}" | grep -qP '-alpha\.\d+$'; then
+            sed -i 's|^alphaBuild=.*$|alphaBuild=true|' gradle.properties
+          fi
+
+      - name: Read properties
+        id: props
+        shell: bash
+        run: |
+          get() { grep -E "^$1[[:space:]]*=" gradle.properties | head -1 | cut -d= -f2 | tr -d ' \r\n'; }
+          ALPHA=$(get alphaBuild)
+          RELEASE_TYPE="minor"
+          [ "$ALPHA" = "true" ] && RELEASE_TYPE="alpha"
+          echo "releaseType=$RELEASE_TYPE"                 >> "$GITHUB_OUTPUT"
+          echo "version=$(get mod_version)"                >> "$GITHUB_OUTPUT"
+          echo "mcVersion=$(get minecraft_version)"        >> "$GITHUB_OUTPUT"
+          echo "mcStart=$(get publishMcStart)"             >> "$GITHUB_OUTPUT"
+          echo "mcEnd=$(get publishMcEnd)"                 >> "$GITHUB_OUTPUT"
+          echo "discordPing=$(get discordPing)"            >> "$GITHUB_OUTPUT"
+          echo "avatarUrl=$(get discord_avatar_url)"       >> "$GITHUB_OUTPUT"
+          echo "bannerUrl=$(get discord_banner_url)"       >> "$GITHUB_OUTPUT"
+          echo "color=$(get discordEmbedColor)"            >> "$GITHUB_OUTPUT"
+          echo "displayPrefix=$(get publishDisplayPrefix)" >> "$GITHUB_OUTPUT"
+          echo "displaySuffix=$(get publishDisplaySuffix)" >> "$GITHUB_OUTPUT"
+          echo "cfSlug=$(get curseforgeProjectSlug)"       >> "$GITHUB_OUTPUT"
+          echo "mrSlug=$(get modrinthProjectSlug)"         >> "$GITHUB_OUTPUT"
+          echo "branch=$(get branchName)"                  >> "$GITHUB_OUTPUT"
+          echo "mcExtraRaw=$(get publishExtraMcVersions)"  >> "$GITHUB_OUTPUT"
+
+      - name: Send to Worker
+        shell: bash
+        env:
+          WORKER_API_KEY: ${{ secrets.WORKER_API_KEY }}
+          CHANGELOG_RAW: ${{ needs.build.outputs.changelog }}
+          MC_EXTRA_RAW: ${{ steps.props.outputs.mcExtraRaw }}
+        run: |
+          IMAGE_URLS=$(echo "$CHANGELOG_RAW" | grep -oP '!\[.*?\]\(\K[^)]+' | head -4 | jq -R . | jq -sc . 2>/dev/null) || IMAGE_URLS="[]"
+          [ -z "$IMAGE_URLS" ] && IMAGE_URLS="[]"
+          CLEAN=$(echo "$CHANGELOG_RAW" | sed 's/!\[.*\]([^)]*)//g' | sed '/^[[:space:]]*$/d' | sed -e '${/^$/d}')
+          if [ -n "$MC_EXTRA_RAW" ]; then
+            MC_EXTRA_JSON=$(echo "$MC_EXTRA_RAW" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' | jq -R . | jq -sc .) || MC_EXTRA_JSON="[]"
+            [ -z "$MC_EXTRA_JSON" ] && MC_EXTRA_JSON="[]"
+          else
+            MC_EXTRA_JSON="[]"
+          fi
+          PAYLOAD=$(jq -n \
+            --arg project      "${{ github.repository }}" \
+            --arg tag          "${{ github.ref_name }}" \
+            --arg branch       "${{ steps.props.outputs.branch }}" \
+            --arg configPack   "" \
+            --arg javaVersion  "21" \
+            --arg modName      "LitematicaTool" \
+            --arg version      "${{ steps.props.outputs.version }}" \
+            --arg mcVersion    "${{ steps.props.outputs.mcVersion }}" \
+            --arg mcStart      "${{ steps.props.outputs.mcStart }}" \
+            --arg mcEnd        "${{ steps.props.outputs.mcEnd }}" \
+            --arg releaseType  "${{ steps.props.outputs.releaseType }}" \
+            --argjson discordPing "${{ steps.props.outputs.discordPing == 'true' && 'true' || 'false' }}" \
+            --arg cfSlug       "${{ steps.props.outputs.cfSlug }}" \
+            --arg mrSlug       "${{ steps.props.outputs.mrSlug }}" \
+            --arg bannerUrl    "${{ steps.props.outputs.bannerUrl }}" \
+            --arg avatarUrl    "${{ steps.props.outputs.avatarUrl }}" \
+            --arg thumbnailUrl "${{ steps.props.outputs.avatarUrl }}" \
+            --arg color        "${{ steps.props.outputs.color }}" \
+            --arg displayPrefix "${{ steps.props.outputs.displayPrefix }}" \
+            --arg displaySuffix "${{ steps.props.outputs.displaySuffix }}" \
+            --arg changelog    "$CLEAN" \
+            --argjson imageUrls "$IMAGE_URLS" \
+            --argjson mcExtra  "$MC_EXTRA_JSON" \
+            '{
+              project:       $project,
+              tag:           $tag,
+              branch:        $branch,
+              configPack:    $configPack,
+              javaVersion:   $javaVersion,
+              modName:       $modName,
+              version:       $version,
+              mcVersion:     $mcVersion,
+              mcStart:       $mcStart,
+              mcEnd:         $mcEnd,
+              mcExtra:       $mcExtra,
+              releaseType:   $releaseType,
+              discordPing:   $discordPing,
+              cfSlug:        $cfSlug,
+              mrSlug:        $mrSlug,
+              bannerUrl:     $bannerUrl,
+              avatarUrl:     $avatarUrl,
+              thumbnailUrl:  $thumbnailUrl,
+              color:         $color,
+              displayPrefix: $displayPrefix,
+              displaySuffix: $displaySuffix,
+              changelog:     $changelog,
+              imageUrls:     $imageUrls
+            }')
+
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST https://moogsmods-bot.finndog176.workers.dev/release \
+            -H "Content-Type: application/json" \
+            -H "X-API-Key: $WORKER_API_KEY" \
+            -d "$PAYLOAD")
+
+          echo "Worker responded: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Discord Worker returned $HTTP_CODE, review card may not have posted"
+          fi

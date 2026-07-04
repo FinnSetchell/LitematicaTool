@@ -57,34 +57,50 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-File changeLog = rootProject.file("CHANGELOG.md")
-String changelogtext = changeLog.exists() ? changeLog.text : ""
+def changeLog = rootProject.file("CHANGELOG.md")
+def changelogContent = changeLog.exists() ? changeLog.getText('UTF-8') : ''
+def changelogMatcher = ~/(?s)## \[${project.version}\] - \d{4}-\d{2}-\d{2}\r?\n(.*?)(?=\r?\n---|\r?\n## \[|\z)/
+def changelogMatch = (changelogContent =~ changelogMatcher)
+def changelogLatest = changelogMatch.find() ? changelogMatch.group(1).trim() : ''
+
+def isAlpha = project.findProperty('alphaBuild')?.toString()?.toBoolean() ?: false
+def displayPrefix = project.findProperty('publishDisplayPrefix') ?: 'LitematicaTool'
 
 publishMods {
     file = remapJar.archiveFile
-    changelog = changelogtext
-    type = STABLE
-
-    displayName = "Litematica Tool ${project.version} [NEOFORGE]"
-
+    changelog = changelogLatest
+    version = project.version.toString()
+    type = isAlpha ? ALPHA : STABLE
+    displayName = "${displayPrefix} ${project.version}-${minecraft_version} (NeoForge)"
     modLoaders.add("neoforge")
+    dryRun = false
+    maxRetries = 3
 
     modrinth {
-        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
-        projectId = "n6d6agCA"
+        accessToken = providers.environmentVariable('MODRINTH_API_KEY')
+        projectId = (project.findProperty('modrinthProjectId') ?: '')
         minecraftVersionRange {
-            start = "1.21"
-            end = "1.21.1"
+            start = project.findProperty('publishMcStart')
+            end = project.findProperty('publishMcEnd')
+        }
+        def extra = (project.findProperty('publishExtraMcVersions') ?: '').toString().trim()
+        if (extra) {
+            extra.split(',').each { v -> if (v.trim()) minecraftVersions.add(v.trim()) }
         }
     }
 
     curseforge {
-        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-        projectId = "494413"
-        minecraftVersionRange {
-            start = "1.21"
-            end = "1.21.1"
-        }
+        accessToken = providers.environmentVariable('CURSEFORGE_API_KEY')
+        projectId = (project.findProperty('curseforgeProjectId') ?: '')
+        projectSlug = (project.findProperty('curseforgeProjectSlug') ?: '')
         serverRequired = true
+        minecraftVersionRange {
+            start = project.findProperty('publishMcStart')
+            end = project.findProperty('publishMcEnd')
+        }
+        def extra = (project.findProperty('publishExtraMcVersions') ?: '').toString().trim()
+        if (extra) {
+            extra.split(',').each { v -> if (v.trim()) minecraftVersions.add(v.trim()) }
+        }
     }
 }
