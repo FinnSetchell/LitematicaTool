@@ -16,14 +16,14 @@ A simple tool designed to work with Litematica for enhanced schematic management
 [[dependencies.litematicatool]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.0,)"
+versionRange = "[20.6,21.0)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.litematicatool]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,1.21.2)"
+versionRange = "[1.20.5,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
