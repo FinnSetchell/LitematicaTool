@@ -1,37 +1,31 @@
 {
-  "schemaVersion": 1,
-  "id": "litematicatool",
-  "version": "${version}",
-  "name": "LitematicaTool",
-  "description": "A simple tool designed to work with Litematica for enhanced schematic management.",
-  "authors": [
-    "FinnDog"
-  ],
-  "contact": {
-    "homepage": "https://github.com/FinnDog/LitematicaTool",
-    "sources": "https://github.com/FinnDog/LitematicaTool"
-  },
-  "license": "CC0-1.0",
-  "icon": "assets/litematicatool/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "com.finndog.fabric.LitematicaToolFabric"
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
     ],
-    "client": [
-      "com.finndog.fabric.client.LitematicaToolFabricClient"
-    ]
-  },
-  "mixins": [
-    "litematicatool.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.19.3",
-    "minecraft": ">=26.2 <26.3",
-    "java": ">=25",
-    "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
-  }
+    "contact": {
+        "homepage": "https://github.com/FinnDog/LitematicaTool",
+        "sources": "https://github.com/FinnDog/LitematicaTool"
+    },
+    "license": "${license}",
+    "icon": "assets/${mod_id}/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.finndog.litematicatool.fabric.LitematicaToolFabric"
+        ],
+        "client": [
+            "com.finndog.litematicatool.fabric.LitematicaToolFabricClient"
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": "${fabric_mc_dependency}",
+        "java": ">=${java_version}"
+    }
 }
