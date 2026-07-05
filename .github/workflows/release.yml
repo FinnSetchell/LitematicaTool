@@ -39,7 +39,7 @@ jobs:
         run: |
           set -eo pipefail
           chmod +x gradlew
-          ./gradlew :fabric:build :neoforge:build
+          ./gradlew :fabric:build
 
       - name: Extract Changelog
         id: changelog
