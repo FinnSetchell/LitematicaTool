@@ -11,4 +11,3 @@ rootProject.name = 'LitematicaTool'
 
 include 'common'
 include 'fabric'
-include 'neoforge'
