@@ -1,0 +1,175 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to publish'
+        type: string
+        required: true
+      releaseType:
+        description: 'Release type: major | minor | alpha'
+        type: string
+        required: true
+      releaseId:
+        description: 'Worker KV release ID'
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set alpha flag from releaseType
+        shell: bash
+        run: |
+          if [ "${{ inputs.releaseType }}" = "alpha" ]; then
+            sed -i 's|^alphaBuild=.*$|alphaBuild=true|' gradle.properties
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        shell: bash
+        run: |
+          set -eo pipefail
+          chmod +x gradlew
+          ./gradlew :fabric:build :neoforge:build
+
+      - name: Extract Changelog
+        id: changelog
+        shell: bash
+        run: |
+          VERSION=$(grep -E '^(mod_version|version)[[:space:]]*=' gradle.properties | head -1 | cut -d= -f2 | tr -d ' \r\n')
+          BODY=$(awk -v v="$VERSION" '$0 ~ "^## [[]?" v "($|[^-])" { capture=1; next } /^## / && capture { exit } capture { print }' CHANGELOG.md)
+          printf "body<<DELIMITER\n%s\nDELIMITER\n" "$BODY" >> "$GITHUB_OUTPUT"
+
+      - name: Build release title
+        id: release_meta
+        shell: bash
+        run: |
+          if [ "${{ inputs.releaseType }}" = "alpha" ]; then
+            TITLE="${{ inputs.tag }} (Alpha)"
+            BANNER="> Alpha test build. Feedback welcome at https://github.com/${GITHUB_REPOSITORY}/issues."
+            printf "title=%s\n" "$TITLE" >> "$GITHUB_OUTPUT"
+            printf "body<<DELIMITER\n%s\n\n%s\nDELIMITER\n" "$BANNER" "${{ steps.changelog.outputs.body }}" >> "$GITHUB_OUTPUT"
+          else
+            printf "title=%s\n" "${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+            printf "body<<DELIMITER\n%s\nDELIMITER\n" "${{ steps.changelog.outputs.body }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to CurseForge and Modrinth
+        shell: bash
+        run: |
+          set -eo pipefail
+          ./gradlew :fabric:publishMods :neoforge:publishMods \
+            -x :fabric:publishGithub \
+            -x :neoforge:publishGithub \
+            -x :fabric:announceDiscord \
+            -x :neoforge:announceDiscord
+        env:
+          MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_REF_NAME: ${{ inputs.tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ steps.release_meta.outputs.title }}
+          body: ${{ steps.release_meta.outputs.body }}
+          prerelease: ${{ inputs.releaseType == 'alpha' }}
+          files: |
+            fabric/build/libs/*.jar
+            neoforge/build/libs/*.jar
+          fail_on_unmatched_files: false
+
+      - name: Notify Worker
+        if: always()
+        shell: bash
+        env:
+          RELEASE_ID: ${{ inputs.releaseId }}
+          WORKER_API_KEY: ${{ secrets.WORKER_API_KEY }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          SUCCESS="false"
+          [ "$JOB_STATUS" = "success" ] && SUCCESS="true"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "https://moogsmods-bot.finndog176.workers.dev/published" \
+            -H "X-API-Key: $WORKER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"releaseId\":\"$RELEASE_ID\",\"success\":$SUCCESS}")
+          echo "Worker /published: $HTTP_CODE"
+
+      - name: Prepare version bump
+        if: inputs.releaseType != 'alpha'
+        shell: bash
+        run: |
+          BRANCH=$(grep -E '^branchName[[:space:]]*=' gradle.properties | cut -d= -f2 | tr -d ' \r\n')
+          TODAY=$(date -u +%Y-%m-%d)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "$BRANCH"
+          git checkout "$BRANCH"
+          OLD=$(grep -E '^mod_version[[:space:]]*=' gradle.properties | cut -d= -f2 | tr -d ' \r\n')
+          IFS='.' read -r -a P <<< "$OLD"
+          NEW="${P[0]}.${P[1]}.$((P[2]+1))"
+          sed -i "s|^mod_version[[:space:]]*=.*$|mod_version = ${NEW}|" gradle.properties
+          sed -i 's|^discordPing=.*$|discordPing=false|' gradle.properties
+          sed -i 's|^alphaBuild=.*$|alphaBuild=false|' gradle.properties
+          echo "OLD_VERSION=${OLD}" >> "$GITHUB_ENV"
+          echo "NEW_VERSION=${NEW}" >> "$GITHUB_ENV"
+          echo "RELEASE_DATE=${TODAY}" >> "$GITHUB_ENV"
+          echo "BUMP_BRANCH=${BRANCH}" >> "$GITHUB_ENV"
+
+      - name: Stub CHANGELOG for next version
+        if: inputs.releaseType != 'alpha'
+        shell: python3 {0}
+        env:
+          NEW_VERSION: ${{ env.NEW_VERSION }}
+          RELEASE_DATE: ${{ env.RELEASE_DATE }}
+        run: |
+          import os, re
+          from pathlib import Path
+          new_v = os.environ['NEW_VERSION']
+          today = os.environ['RELEASE_DATE']
+          stub = (
+              f"## [{new_v}] - {today}\n\n"
+              "_Pending. Update this section before tagging._\n\n"
+              "---\n\n"
+          )
+          p = Path('CHANGELOG.md')
+          if p.exists():
+              content = p.read_text(encoding='utf-8')
+              match = re.search(r'# Changelog(?:\r?\n)+---(?:\r?\n)+', content)
+              if match:
+                  content = content[:match.end()] + stub + content[match.end():]
+              else:
+                  content = stub + content
+              p.write_text(content, encoding='utf-8')
+              print(f'Stubbed CHANGELOG.md with [{new_v}] - {today}')
+
+      - name: Commit and push version bump
+        if: inputs.releaseType != 'alpha'
+        shell: bash
+        run: |
+          git add gradle.properties CHANGELOG.md
+          git commit -m "post-release: bump ${{ env.OLD_VERSION }} to ${{ env.NEW_VERSION }} plus stub CHANGELOG section"
+          git push origin "${{ env.BUMP_BRANCH }}"
