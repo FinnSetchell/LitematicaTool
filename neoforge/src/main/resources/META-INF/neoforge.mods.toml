@@ -1,31 +1,26 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
-#issueTrackerURL = ""
-license = "CC0-1.0"
+loaderVersion = "${neoforge_loader_version_range}"
+license = "${license}"
 
 [[mods]]
-modId = "litematicatool"
+modId = "${mod_id}"
 version = "${version}"
-displayName = "LitematicaTool"
-authors = "FinnDog"
-description = '''
-A simple tool designed to work with Litematica for enhanced schematic management.
-'''
-#logoFile = ""
+displayName = "${mod_name}"
+logoFile = "assets/${mod_id}/icon.png"
+credits = "${credits}"
+authors = "${mod_author}"
+description = '''${description}'''
 
-[[dependencies.litematicatool]]
+[[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1,26.2)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.litematicatool]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1,26.2)"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
-
-[[mixins]]
-config = "litematicatool.mixins.json"
