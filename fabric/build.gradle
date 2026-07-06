@@ -32,7 +32,7 @@ loom {
 }
 
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
-['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
     configurations.named("$variant") {
         attributes {
             attribute(loaderAttribute, 'fabric')
@@ -59,7 +59,7 @@ def isAlpha = project.findProperty('alphaBuild')?.toString()?.toBoolean() ?: fal
 def displayPrefix = project.findProperty('publishDisplayPrefix') ?: 'LitematicaTool'
 
 publishMods {
-    file = tasks.remapJar.archiveFile
+    file = tasks.named('jar').flatMap { it.archiveFile }
     changelog = changelogLatest
     version = project.version.toString()
     type = isAlpha ? ALPHA : STABLE
