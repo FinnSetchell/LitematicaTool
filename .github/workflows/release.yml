@@ -72,7 +72,8 @@ jobs:
           RELEASE_TYPE="minor"
           [ "$ALPHA" = "true" ] && RELEASE_TYPE="alpha"
           echo "releaseType=$RELEASE_TYPE"                 >> "$GITHUB_OUTPUT"
-          echo "version=$(get mod_version)"                >> "$GITHUB_OUTPUT"
+          VERSION_VAL=$(grep -E '^(mod_version|version)[[:space:]]*=' gradle.properties | head -1 | cut -d= -f2 | tr -d ' \r\n')
+          echo "version=$VERSION_VAL"                      >> "$GITHUB_OUTPUT"
           echo "mcVersion=$(get minecraft_version)"        >> "$GITHUB_OUTPUT"
           echo "mcStart=$(get publishMcStart)"             >> "$GITHUB_OUTPUT"
           echo "mcEnd=$(get publishMcEnd)"                 >> "$GITHUB_OUTPUT"
@@ -161,5 +162,6 @@ jobs:
 
           echo "Worker responded: $HTTP_CODE"
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "::warning::Discord Worker returned $HTTP_CODE, review card may not have posted"
+            echo "::error::Discord Worker returned $HTTP_CODE, review card failed to post"
+            exit 1
           fi
