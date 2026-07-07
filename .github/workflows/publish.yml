@@ -79,11 +79,7 @@ jobs:
         shell: bash
         run: |
           set -eo pipefail
-          ./gradlew :fabric:publishMods :neoforge:publishMods \
-            -x :fabric:publishGithub \
-            -x :neoforge:publishGithub \
-            -x :fabric:announceDiscord \
-            -x :neoforge:announceDiscord
+          ./gradlew :fabric:publishMods :neoforge:publishMods
         env:
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
