@@ -26,7 +26,7 @@ A simple tool designed to work with Litematica for enhanced schematic management
 ## Issues & Support
 
 - [GitHub Issues](https://github.com/FinnDog/LitematicaTool/issues)
-- [Discord](https://discord.gg/S5nffJbuvA)
+- [Discord](https://moogsmods.com/discord?r=readme-litematica)
 
 ---
 
