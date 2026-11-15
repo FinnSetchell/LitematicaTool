@@ -1,0 +1,303 @@
+# Per-node values. Mod metadata that never varies stays in gradle.properties.
+# Tables are picked per node by `properties { tags(version, loader) }` in stonecutter.gradle.kts, so
+# `deps.fabric_api` resolves to whatever the matching [fabric."<version>"] table declares.
+#
+# A node's version (the table name) is what `//? if` conditions compare against. mod.mc_build is the
+# Minecraft version it compiles against, which is usually the same but not always: where a loader
+# skipped a release, that loader's node compiles against the next one in the range.
+# mod.mc_compat is the range the jar declares, in each loader's own syntax.
+# mod.recipe picks the recipe folder and format under src/main/recipe; the shape changed four times
+# between 1.20 and 1.21.2 and a file in the wrong shape is ignored without an error in game.
+
+# Loom for the obfuscated versions, applied by dev.kikugie.loom-back-compat.
+loomx.loom_version = "1.17-SNAPSHOT"
+
+# ------------------------------------------------------------------ 1.20-1.20.4 (Java 17)
+["1.20"]
+mod.java = "17"
+# data/<ns>/recipes/, result "item", ingredient object.
+mod.recipe = "1.20"
+
+[fabric."1.20"]
+mod.mc_build = "1.20"
+mod.mc_compat = ">=1.20 <1.20.5"
+mod.fabric_loader_dep = ">=0.14.25"
+deps.fabric_loader = "0.14.25"
+deps.fabric_api = "0.83.0+1.20"
+
+# Built by build.forge-legacy.gradle.kts: Forge before 1.20.5 needs a reobfuscated jar.
+[forge."1.20"]
+mod.mc_build = "1.20"
+mod.mc_compat = "[1.20,1.20.5)"
+deps.forge = "46.0.14"
+deps.forge_range = "[46,)"
+
+# No NeoForge node: NeoForge starts at 1.20.2, so it cannot cover this range's 1.20 and 1.20.1.
+
+# ------------------------------------------------------------------ 1.20.5-1.20.6 (Java 21)
+["1.20.6"]
+mod.java = "21"
+# 1.20.5 moved the result key from "item" to "id". Folder and ingredient unchanged.
+mod.recipe = "1.20.5"
+
+[fabric."1.20.6"]
+mod.mc_build = "1.20.6"
+mod.mc_compat = ">=1.20.5 <1.20.7"
+mod.fabric_loader_dep = ">=0.15.0"
+deps.fabric_loader = "0.15.10"
+deps.fabric_api = "0.98.0+1.20.6"
+
+# Forge has no 1.20.5 build at all, so this covers 1.20.6 only.
+[forge."1.20.6"]
+mod.mc_build = "1.20.6"
+mod.mc_compat = "[1.20.6,1.20.7)"
+deps.forge = "50.2.15"
+deps.forge_range = "[50,)"
+
+[neoforge."1.20.6"]
+mod.mc_build = "1.20.6"
+mod.mc_compat = "[1.20.6,1.20.7)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "20.6.139"
+deps.neoforge_min = "20.6.0-beta"
+deps.neoforge_range = "[2,)"
+
+# ------------------------------------------------------------------ 1.21-1.21.1 (Java 21)
+["1.21.1"]
+mod.java = "21"
+# 1.21 renamed the folder from recipes to recipe. Ingredient is still an object.
+mod.recipe = "1.21"
+
+[fabric."1.21.1"]
+mod.mc_build = "1.21.1"
+mod.mc_compat = ">=1.21 <1.21.2"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.16.7"
+deps.fabric_api = "0.106.0+1.21.1"
+
+[forge."1.21.1"]
+mod.mc_build = "1.21.1"
+mod.mc_compat = "[1.21,1.21.2)"
+deps.forge = "52.0.28"
+deps.forge_range = "[51,)"
+
+[neoforge."1.21.1"]
+mod.mc_build = "1.21.1"
+mod.mc_compat = "[1.21,1.21.2)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.1.68"
+deps.neoforge_min = "21.0.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.2-1.21.3 (Java 21)
+["1.21.2"]
+mod.java = "21"
+# 1.21.2 replaced the ingredient object with a plain item id string. This is the shape every later
+# version uses too.
+mod.recipe = "1.21.2"
+
+[fabric."1.21.2"]
+mod.mc_build = "1.21.2"
+mod.mc_compat = ">=1.21.2 <1.21.4"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.17.3"
+deps.fabric_api = "0.106.1+1.21.2"
+
+# Forge has no 1.21.2 build, so this one compiles against 1.21.3 and declares 1.21.3 only.
+[forge."1.21.2"]
+mod.mc_build = "1.21.3"
+mod.mc_compat = "[1.21.3,1.21.4)"
+deps.forge = "53.1.0"
+deps.forge_range = "[53,)"
+
+[neoforge."1.21.2"]
+mod.mc_build = "1.21.2"
+mod.mc_compat = "[1.21.2,1.21.4)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.2.1-beta"
+deps.neoforge_min = "21.2.1-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.4 (Java 21)
+["1.21.4"]
+mod.java = "21"
+mod.recipe = "1.21.2"
+
+[fabric."1.21.4"]
+mod.mc_build = "1.21.4"
+mod.mc_compat = ">=1.21.4 <1.21.5"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.17.3"
+deps.fabric_api = "0.119.4+1.21.4"
+
+[forge."1.21.4"]
+mod.mc_build = "1.21.4"
+mod.mc_compat = "[1.21.4,1.21.5)"
+deps.forge = "54.1.14"
+deps.forge_range = "[54,)"
+
+[neoforge."1.21.4"]
+mod.mc_build = "1.21.4"
+mod.mc_compat = "[1.21.4,1.21.5)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.4.94-beta"
+deps.neoforge_min = "21.4.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.5-1.21.8 (Java 21)
+["1.21.5"]
+mod.java = "21"
+mod.recipe = "1.21.2"
+
+[fabric."1.21.5"]
+mod.mc_build = "1.21.5"
+mod.mc_compat = ">=1.21.5 <1.21.9"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.16.13"
+deps.fabric_api = "0.120.0+1.21.5"
+
+[forge."1.21.5"]
+mod.mc_build = "1.21.5"
+mod.mc_compat = "[1.21.5,1.21.9)"
+deps.forge = "55.1.18"
+deps.forge_range = "[55,)"
+
+[neoforge."1.21.5"]
+mod.mc_build = "1.21.5"
+mod.mc_compat = "[1.21.5,1.21.9)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.5.0-beta"
+deps.neoforge_min = "21.5.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.9-1.21.10 (Java 21)
+["1.21.10"]
+mod.java = "21"
+mod.recipe = "1.21.2"
+
+[fabric."1.21.10"]
+mod.mc_build = "1.21.10"
+mod.mc_compat = ">=1.21.9 <1.21.11"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.19.3"
+deps.fabric_api = "0.138.4+1.21.10"
+
+[forge."1.21.10"]
+mod.mc_build = "1.21.10"
+mod.mc_compat = "[1.21.10,1.21.11)"
+deps.forge = "60.0.0"
+deps.forge_range = "[56,)"
+
+[neoforge."1.21.10"]
+mod.mc_build = "1.21.10"
+mod.mc_compat = "[1.21.10,1.21.11)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.10.64"
+deps.neoforge_min = "21.10.0"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.11 (Java 21)
+["1.21.11"]
+mod.java = "21"
+mod.recipe = "1.21.2"
+
+[fabric."1.21.11"]
+mod.mc_build = "1.21.11"
+mod.mc_compat = ">=1.21.11 <1.21.12"
+mod.fabric_loader_dep = "*"
+deps.fabric_loader = "0.18.3"
+deps.fabric_api = "0.140.2+1.21.11"
+
+[forge."1.21.11"]
+mod.mc_build = "1.21.11"
+mod.mc_compat = "[1.21.11,1.21.12)"
+deps.forge = "61.1.0"
+deps.forge_range = "[61,)"
+
+[neoforge."1.21.11"]
+mod.mc_build = "1.21.11"
+mod.mc_compat = "[1.21.11,1.21.12)"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "21.11.12-beta"
+deps.neoforge_min = "21.11.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 26.1.0-26.1.2 (Java 25)
+["26.1.2"]
+mod.java = "25"
+mod.recipe = "1.21.2"
+
+[fabric."26.1.2"]
+mod.mc_build = "26.1.2"
+mod.mc_compat = ">=26.1.0 <26.2.0"
+mod.fabric_loader_dep = ">=0.19.1"
+deps.fabric_loader = "0.19.1"
+deps.fabric_api = "0.145.4+26.1.2"
+
+# Forge only exists from 26.1.1.
+[forge."26.1.2"]
+mod.mc_build = "26.1.1"
+mod.mc_compat = "[26.1.1,26.1.2]"
+deps.forge = "63.0.2"
+deps.forge_range = "[63,)"
+
+[neoforge."26.1.2"]
+mod.mc_build = "26.1.2"
+mod.mc_compat = "[26.1.0,26.1.2]"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "26.1.2.7-beta"
+deps.neoforge_min = "26.1.0.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 26.2 (Java 25)
+["26.2"]
+mod.java = "25"
+mod.recipe = "1.21.2"
+
+[fabric."26.2"]
+mod.mc_build = "26.2"
+mod.mc_compat = ">=26.2 <26.3"
+mod.fabric_loader_dep = ">=0.19.3"
+deps.fabric_loader = "0.19.3"
+deps.fabric_api = "0.152.2+26.2"
+
+[forge."26.2"]
+mod.mc_build = "26.2"
+mod.mc_compat = "[26.2,26.2]"
+deps.forge = "65.1.2"
+deps.forge_range = "[65,)"
+
+[neoforge."26.2"]
+mod.mc_build = "26.2"
+mod.mc_compat = "[26.2,26.2]"
+mod.neo_icon_key = "logoFile"
+deps.neoforge = "26.2.0.6-beta"
+deps.neoforge_min = "26.2.0.0-beta"
+deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 26.3 (Java 25)
+["26.3"]
+mod.java = "25"
+mod.recipe = "1.21.2"
+
+[fabric."26.3"]
+mod.mc_build = "26.3"
+mod.mc_compat = ">=26.3 <26.4"
+mod.fabric_loader_dep = ">=0.19.5"
+deps.fabric_loader = "0.19.5"
+deps.fabric_api = "0.160.6+26.3"
+
+[forge."26.3"]
+mod.mc_build = "26.3"
+mod.mc_compat = "[26.3,26.3]"
+deps.forge = "66.0.5"
+deps.forge_range = "[66,)"
+
+[neoforge."26.3"]
+mod.mc_build = "26.3"
+mod.mc_compat = "[26.3,26.3]"
+# 26.3 renamed the mods.toml logo key to iconFile.
+mod.neo_icon_key = "iconFile"
+deps.neoforge = "26.3.0.1-beta"
+deps.neoforge_min = "26.3.0.0-beta"
+deps.neoforge_range = "[4,)"

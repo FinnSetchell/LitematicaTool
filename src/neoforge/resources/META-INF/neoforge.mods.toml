@@ -1,12 +1,13 @@
 modLoader = "javafml"
-loaderVersion = "${neoforge_loader_version_range}"
+loaderVersion = "${neoforge_range}"
 license = "${license}"
+issueTrackerURL = "https://github.com/FinnDog/LitematicaTool/issues"
 
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
-logoFile = "assets/${mod_id}/icon.png"
+${neo_icon_key} = "assets/${mod_id}/icon.png"
 credits = "${credits}"
 authors = "${mod_author}"
 description = '''${description}'''
@@ -14,13 +15,13 @@ description = '''${description}'''
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "${neoforge_version_range}"
+versionRange = "${neoforge_min}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "${minecraft_version_range}"
+versionRange = "${mc_compat}"
 ordering = "NONE"
 side = "BOTH"

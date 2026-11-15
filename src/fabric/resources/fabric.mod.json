@@ -9,7 +9,8 @@
     ],
     "contact": {
         "homepage": "https://github.com/FinnDog/LitematicaTool",
-        "sources": "https://github.com/FinnDog/LitematicaTool"
+        "sources": "https://github.com/FinnDog/LitematicaTool",
+        "issues": "https://github.com/FinnDog/LitematicaTool/issues"
     },
     "license": "${license}",
     "icon": "assets/${mod_id}/icon.png",
@@ -23,9 +24,9 @@
         ]
     },
     "depends": {
-        "fabricloader": ">=${fabric_loader_version}",
+        "fabricloader": "${fabric_loader_dep}",
         "fabric-api": "*",
-        "minecraft": "${fabric_mc_dependency}",
+        "minecraft": "${mc_compat}",
         "java": ">=${java_version}"
     }
 }

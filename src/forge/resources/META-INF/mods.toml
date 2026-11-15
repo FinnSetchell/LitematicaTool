@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "${forge_range}"
+license = "${license}"
+issueTrackerURL = "https://github.com/FinnDog/LitematicaTool/issues"
+
+[[mods]]
+    modId = "${mod_id}"
+    logoFile = "assets/litematicatool/icon.png"
+    logoBlur = false
+    version = "${version}"
+    displayName = "${mod_name}"
+    displayURL = "https://www.curseforge.com/minecraft/mc-mods/litematica-tool"
+    authors = "${mod_author}"
+    credits = "${credits}"
+    description = '''${description}'''
+
+[[dependencies.litematicatool]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "${forge_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.litematicatool]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "${mc_compat}"
+    ordering = "NONE"
+    side = "BOTH"
