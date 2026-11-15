@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " /",
+    "/ "
+  ],
+  "key": {
+    "/": "minecraft:stick"
+  },
+  "result": {
+    "id": "litematicatool:the_stick",
+    "count": 1
+  }
+}
