@@ -1,0 +1,112 @@
+# v2 publish manifest - FinnSetchell/LitematicaTool
+#
+# Lives ONLY on the default branch (`main`); every workflow fetches it from there
+# regardless of which branch a tag sits on. This repo has exactly one branch.
+#
+# LitematicaTool is a STONECUTTER repo of the shape where ONE branch carries ALL
+# THREE loaders, with nodes named `versions/<mc>-<loader>`. So each target declares
+# `builds` (per-MC-version) rather than an `mc` window, all three sit on `main`, and
+# the loader suffix in `jarDir` is what tells them apart - which is the arrangement
+# the manifest validator explicitly provides for.
+#
+# The tag's trailing half is the target's WORD label, not an MC number: all three
+# loaders build the same MC versions, so no MC number could say which target a tag
+# means.
+#
+#   2.1.0-fabric    -> 11 builds (1.20 .. 26.3)
+#   2.1.0-forge     -> 11 builds (1.20 .. 26.3)
+#   2.1.0-neoforge  -> 10 builds (1.20.6 .. 26.3; NeoForge does not exist for 1.20)
+schema: 1
+mod:
+  id: litematicatool
+  # Live project title, 2026-11-15: https://api.modrinth.com/v2/project/n6d6agCA
+  displayName: "Litematica Tool"
+  # Live-verified 2026-11-15. The two platforms currently DISAGREE: Modrinth's
+  # project declares client_side=required AND server_side=required, while all 20
+  # published CurseForge files carry only the 'Server' tag. Both required is the
+  # accurate one for this mod - it registers an item, which the server needs for
+  # the recipe and the client needs for the model and tooltip - so the CurseForge
+  # tagging has been wrong and this corrects it from the next upload onward.
+  environments: [Client, Server]
+  name: LitematicaTool
+platforms:
+  # Live-verified 2026-11-15 against api.modrinth.com. NOTE: the retired
+  # `modrinthProjectSlug` gradle key said `litematica-tool`, which is WRONG - the
+  # real slug is `litematicatool`.
+  modrinth:   { projectId: n6d6agCA, slug: litematicatool }
+  # projectId confirmed live (api/v1/mods/494413/files). The slug is carried over
+  # from the retired `curseforgeProjectSlug` key and could not be re-verified:
+  # CurseForge answers automated requests with 403.
+  curseforge: { projectId: 494413, slug: litematica-tool }
+discord:
+  # From the project's own accent colour on Modrinth (4412492).
+  embedColor: "#43544C"
+  avatarUrl: "https://cdn.modrinth.com/data/n6d6agCA/8b412912e3dcb56a58f41a5d96e30645ec12a5c4_96.webp"
+  thumbnailUrl: "https://cdn.modrinth.com/data/n6d6agCA/8b412912e3dcb56a58f41a5d96e30645ec12a5c4_96.webp"
+  # The retired `discordPing` key was false.
+  pingDefault: false
+artifacts:
+  - type: mod-jar
+targets:
+  # `builds[].java` is the JDK that RUNS Gradle, which is not the bytecode target in
+  # stonecutter.properties.toml. Stonecutter 0.9.7's settings plugin will not resolve
+  # on a JVM below 21, so the 1.20 build runs on 21 even though it targets Java 17.
+  # The 26.x builds target Java 25 and run Gradle on 25.
+  - branch: main
+    tagLabel: fabric
+    loaders: [fabric]
+    buildCommand: ":{mc}-fabric:build"
+    jarDir: "versions/{mc}-fabric/build/libs"
+    # Fabric is the only loader that needs Fabric API: the creative tab and client
+    # tick hooks come from it, and fabric.mod.json declares it a hard dependency.
+    # A target's own list REPLACES the mod-level one, and the mod level declares
+    # none, so the other two targets state `[]` explicitly.
+    dependencies:
+      - { modrinth: P7dR8mSH, curseforge: fabric-api, type: required }
+    builds:
+      - { mc: "1.20",    java: 21 }
+      - { mc: "1.20.6",  java: 21 }
+      - { mc: "1.21.1",  java: 21 }
+      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.21.4",  java: 21 }
+      - { mc: "1.21.5",  java: 21 }
+      - { mc: "1.21.10", java: 21 }
+      - { mc: "1.21.11", java: 21 }
+      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.2",    java: 25 }
+      - { mc: "26.3",    java: 25 }
+  - branch: main
+    tagLabel: forge
+    loaders: [forge]
+    buildCommand: ":{mc}-forge:build"
+    jarDir: "versions/{mc}-forge/build/libs"
+    dependencies: []
+    builds:
+      - { mc: "1.20",    java: 21 }
+      - { mc: "1.20.6",  java: 21 }
+      - { mc: "1.21.1",  java: 21 }
+      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.21.4",  java: 21 }
+      - { mc: "1.21.5",  java: 21 }
+      - { mc: "1.21.10", java: 21 }
+      - { mc: "1.21.11", java: 21 }
+      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.2",    java: 25 }
+      - { mc: "26.3",    java: 25 }
+  - branch: main
+    tagLabel: neoforge
+    loaders: [neoforge]
+    buildCommand: ":{mc}-neoforge:build"
+    jarDir: "versions/{mc}-neoforge/build/libs"
+    dependencies: []
+    builds:
+      - { mc: "1.20.6",  java: 21 }
+      - { mc: "1.21.1",  java: 21 }
+      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.21.4",  java: 21 }
+      - { mc: "1.21.5",  java: 21 }
+      - { mc: "1.21.10", java: 21 }
+      - { mc: "1.21.11", java: 21 }
+      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.2",    java: 25 }
+      - { mc: "26.3",    java: 25 }

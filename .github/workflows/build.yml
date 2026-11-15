@@ -3,20 +3,49 @@ name: Build
 on:
   push:
     branches: ['**']
-    tags-ignore: ['*.*.*-*.*.*']
+    # Release tags are `<version>-<loader>` now, and they are the Release
+    # workflow's business - building them here as well just doubles every release.
+    tags-ignore: ['*.*.*-*', '*.*.*-alpha.*-*']
   pull_request:
     branches: ['**']
 
 jobs:
   build:
+    name: ${{ matrix.mc }}-${{ matrix.loader }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # Not every node, which would be 32 Minecraft setups a push. These are the
+      # versions where the source actually branches, so a break in any gate shows
+      # up here:
+      #   1.20     oldest tooltip and id shapes, and Forge's legacy reobf build
+      #   1.21.5   five-argument tooltip; Forge mod bus is still an IEventBus
+      #   1.21.10  Forge's mod bus becomes a BusGroup
+      #   1.21.11  ResourceLocation is renamed to Identifier
+      #   26.1.2   Fabric's creative tab API changes; Forge's getBus disappears
+      #   26.3     newest
+      matrix:
+        include:
+          - { mc: "1.20",    loader: fabric,   java: 21 }
+          - { mc: "1.20",    loader: forge,    java: 21 }
+          - { mc: "1.21.5",  loader: fabric,   java: 21 }
+          - { mc: "1.21.5",  loader: forge,    java: 21 }
+          - { mc: "1.21.5",  loader: neoforge, java: 21 }
+          - { mc: "1.21.10", loader: forge,    java: 21 }
+          - { mc: "1.21.11", loader: fabric,   java: 21 }
+          - { mc: "1.21.11", loader: forge,    java: 21 }
+          - { mc: "1.21.11", loader: neoforge, java: 21 }
+          - { mc: "26.1.2",  loader: forge,    java: 25 }
+          - { mc: "26.3",    loader: fabric,   java: 25 }
+          - { mc: "26.3",    loader: forge,    java: 25 }
+          - { mc: "26.3",    loader: neoforge, java: 25 }
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: Set up Java ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: ${{ matrix.java }}
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -27,4 +56,4 @@ jobs:
         run: |
           set -eo pipefail
           chmod +x gradlew
-          ./gradlew :fabric:build :neoforge:build
+          ./gradlew ":${{ matrix.mc }}-${{ matrix.loader }}:build"
