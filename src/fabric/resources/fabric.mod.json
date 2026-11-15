@@ -8,9 +8,9 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://github.com/FinnDog/LitematicaTool",
-        "sources": "https://github.com/FinnDog/LitematicaTool",
-        "issues": "https://github.com/FinnDog/LitematicaTool/issues"
+        "homepage": "https://github.com/FinnSetchell/LitematicaTool",
+        "sources": "https://github.com/FinnSetchell/LitematicaTool",
+        "issues": "https://github.com/FinnSetchell/LitematicaTool/issues"
     },
     "license": "${license}",
     "icon": "assets/${mod_id}/icon.png",
