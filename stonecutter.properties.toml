@@ -269,13 +269,13 @@ deps.fabric_api = "0.152.2+26.2"
 
 [forge."26.2"]
 mod.mc_build = "26.2"
-mod.mc_compat = "[26.2,26.2]"
+mod.mc_compat = "[26.2,26.3)"
 deps.forge = "65.1.2"
 deps.forge_range = "[65,)"
 
 [neoforge."26.2"]
 mod.mc_build = "26.2"
-mod.mc_compat = "[26.2,26.2]"
+mod.mc_compat = "[26.2,26.3)"
 mod.neo_icon_key = "logoFile"
 deps.neoforge = "26.2.0.93"
 deps.neoforge_min = "26.2.0.0-beta"
@@ -295,13 +295,13 @@ deps.fabric_api = "0.160.6+26.3"
 
 [forge."26.3"]
 mod.mc_build = "26.3"
-mod.mc_compat = "[26.3,26.3]"
+mod.mc_compat = "[26.3,26.4)"
 deps.forge = "66.0.5"
 deps.forge_range = "[66,)"
 
 [neoforge."26.3"]
 mod.mc_build = "26.3"
-mod.mc_compat = "[26.3,26.3]"
+mod.mc_compat = "[26.3,26.4)"
 # 26.3 renamed the mods.toml logo key to iconFile.
 mod.neo_icon_key = "iconFile"
 deps.neoforge = "26.3.0.103"
