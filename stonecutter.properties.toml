@@ -6,6 +6,12 @@
 # Minecraft version it compiles against, which is usually the same but not always: where a loader
 # skipped a release, that loader's node compiles against the next one in the range.
 # mod.mc_compat is the range the jar declares, in each loader's own syntax.
+#
+# deps.neoforge is the build this node compiles and runs against in dev, and should be a current
+# release of its line. deps.neoforge_min is the looser runtime floor the jar declares, so users on
+# an earlier build are not locked out. Do not pin deps.neoforge to the first beta of a line: the
+# earliest 26.3 builds crash MixinExtras 0.5.4 during mod construction, which breaks any dev-client
+# test harness that uses mixins, even though this mod has none of its own.
 # mod.recipe picks the recipe folder and format under src/main/recipe; the shape changed four times
 # between 1.20 and 1.21.2 and a file in the wrong shape is ignored without an error in game.
 
@@ -245,7 +251,7 @@ deps.forge_range = "[63,)"
 mod.mc_build = "26.1.2"
 mod.mc_compat = "[26.1.0,26.1.2]"
 mod.neo_icon_key = "logoFile"
-deps.neoforge = "26.1.2.7-beta"
+deps.neoforge = "26.1.2.126"
 deps.neoforge_min = "26.1.0.0-beta"
 deps.neoforge_range = "[4,)"
 
@@ -271,7 +277,7 @@ deps.forge_range = "[65,)"
 mod.mc_build = "26.2"
 mod.mc_compat = "[26.2,26.2]"
 mod.neo_icon_key = "logoFile"
-deps.neoforge = "26.2.0.6-beta"
+deps.neoforge = "26.2.0.93"
 deps.neoforge_min = "26.2.0.0-beta"
 deps.neoforge_range = "[4,)"
 
@@ -298,6 +304,6 @@ mod.mc_build = "26.3"
 mod.mc_compat = "[26.3,26.3]"
 # 26.3 renamed the mods.toml logo key to iconFile.
 mod.neo_icon_key = "iconFile"
-deps.neoforge = "26.3.0.1-beta"
+deps.neoforge = "26.3.0.103"
 deps.neoforge_min = "26.3.0.0-beta"
 deps.neoforge_range = "[4,)"
