@@ -3,7 +3,7 @@ plugins {
 }
 
 // Must stay a string literal: Stonecutter rewrites this line when switching versions.
-stonecutter active "26.3-fabric"
+stonecutter active "1.21.1-fabric"
 
 stonecutter parameters {
     val (version, loader) = current.project.split('-', limit = 2)
