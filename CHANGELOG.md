@@ -2,6 +2,18 @@
 
 ---
 
+## [2.1.0] - 2026-11-16
+
+### Added
+- Forge support
+- Support for Minecraft 1.20 through 26.3 on Fabric, Forge and NeoForge
+- Litematica now uses the stick automatically, with nothing to set up
+  - A tool item you picked yourself is left as it is
+
+### Fixed
+- The stick can now be crafted on every supported version
+  - The recipe had quietly failed to load on most versions, so it could not be made at all
+
 ## [2.0.1] - 2026-09-20
 
 ### Added
