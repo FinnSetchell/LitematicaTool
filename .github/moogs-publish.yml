@@ -63,16 +63,19 @@ targets:
     # none, so the other two targets state `[]` explicitly.
     dependencies:
       - { modrinth: P7dR8mSH, curseforge: fabric-api, type: required }
+    # `from`/`upTo` widen the versions a build is PUBLISHED for; `mc` stays its identity
+    # (jarDir, build command, version number). Each window below is the range that build's
+    # own jar declares in fabric.mod.json, so the listing matches what the jar will load on.
     builds:
-      - { mc: "1.20",    java: 21 }
-      - { mc: "1.20.6",  java: 21 }
-      - { mc: "1.21.1",  java: 21 }
-      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.20",    java: 21, upTo: "1.20.4" }
+      - { mc: "1.20.6",  java: 21, from: "1.20.5" }
+      - { mc: "1.21.1",  java: 21, from: "1.21" }
+      - { mc: "1.21.2",  java: 21, upTo: "1.21.3" }
       - { mc: "1.21.4",  java: 21 }
-      - { mc: "1.21.5",  java: 21 }
-      - { mc: "1.21.10", java: 21 }
+      - { mc: "1.21.5",  java: 21, upTo: "1.21.8" }
+      - { mc: "1.21.10", java: 21, from: "1.21.9" }
       - { mc: "1.21.11", java: 21 }
-      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.1.2",  java: 25, from: "26.1.0" }
       - { mc: "26.2",    java: 25 }
       - { mc: "26.3",    java: 25 }
   - branch: main
@@ -81,16 +84,20 @@ targets:
     buildCommand: ":{mc}-forge:build"
     jarDir: "versions/{mc}-forge/build/libs"
     dependencies: []
+    # Windows taken from each jar's own mods.toml. Forge's differ from Fabric's: its 1.21.10
+    # jar does not claim 1.21.9, and its 26.1.2 jar starts at 26.1.1, because Forge has no
+    # build for those. The node named 1.21.3 is Forge's 1.21.2-era build: Forge never shipped
+    # for 1.21.2, so the jar is built and published for 1.21.3.
     builds:
-      - { mc: "1.20",    java: 21 }
+      - { mc: "1.20",    java: 21, upTo: "1.20.4" }
       - { mc: "1.20.6",  java: 21 }
-      - { mc: "1.21.1",  java: 21 }
-      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.21.1",  java: 21, from: "1.21" }
+      - { mc: "1.21.3",  java: 21 }
       - { mc: "1.21.4",  java: 21 }
-      - { mc: "1.21.5",  java: 21 }
+      - { mc: "1.21.5",  java: 21, upTo: "1.21.8" }
       - { mc: "1.21.10", java: 21 }
       - { mc: "1.21.11", java: 21 }
-      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.1.2",  java: 25, from: "26.1.1" }
       - { mc: "26.2",    java: 25 }
       - { mc: "26.3",    java: 25 }
   - branch: main
@@ -99,14 +106,15 @@ targets:
     buildCommand: ":{mc}-neoforge:build"
     jarDir: "versions/{mc}-neoforge/build/libs"
     dependencies: []
+    # Windows taken from each jar's own neoforge.mods.toml.
     builds:
       - { mc: "1.20.6",  java: 21 }
-      - { mc: "1.21.1",  java: 21 }
-      - { mc: "1.21.2",  java: 21 }
+      - { mc: "1.21.1",  java: 21, from: "1.21" }
+      - { mc: "1.21.2",  java: 21, upTo: "1.21.3" }
       - { mc: "1.21.4",  java: 21 }
-      - { mc: "1.21.5",  java: 21 }
+      - { mc: "1.21.5",  java: 21, upTo: "1.21.8" }
       - { mc: "1.21.10", java: 21 }
       - { mc: "1.21.11", java: 21 }
-      - { mc: "26.1.2",  java: 25 }
+      - { mc: "26.1.2",  java: 25, from: "26.1.0" }
       - { mc: "26.2",    java: 25 }
       - { mc: "26.3",    java: 25 }

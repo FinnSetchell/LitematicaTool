@@ -109,13 +109,6 @@ mod.fabric_loader_dep = "*"
 deps.fabric_loader = "0.17.3"
 deps.fabric_api = "0.106.1+1.21.2"
 
-# Forge has no 1.21.2 build, so this one compiles against 1.21.3 and declares 1.21.3 only.
-[forge."1.21.2"]
-mod.mc_build = "1.21.3"
-mod.mc_compat = "[1.21.3,1.21.4)"
-deps.forge = "53.1.0"
-deps.forge_range = "[53,)"
-
 [neoforge."1.21.2"]
 mod.mc_build = "1.21.2"
 mod.mc_compat = "[1.21.2,1.21.4)"
@@ -123,6 +116,19 @@ mod.neo_icon_key = "logoFile"
 deps.neoforge = "21.2.1-beta"
 deps.neoforge_min = "21.2.1-beta"
 deps.neoforge_range = "[4,)"
+
+# ------------------------------------------------------------------ 1.21.3 (Java 21)
+# Forge only. Forge never shipped a 1.21.2 build, so its build for that range targets 1.21.3 and is
+# named for it, which keeps the published listing honest. Fabric and NeoForge cover 1.21.2 above.
+["1.21.3"]
+mod.java = "21"
+mod.recipe = "1.21.2"
+
+[forge."1.21.3"]
+mod.mc_build = "1.21.3"
+mod.mc_compat = "[1.21.3,1.21.4)"
+deps.forge = "53.1.0"
+deps.forge_range = "[53,)"
 
 # ------------------------------------------------------------------ 1.21.4 (Java 21)
 ["1.21.4"]

@@ -40,7 +40,11 @@ stonecutter {
         version("1.20-forge", "1.20").buildscript("build.forge-legacy.gradle.kts")
         match("1.20.6", "fabric", "forge", "neoforge")
         match("1.21.1", "fabric", "forge", "neoforge")
-        match("1.21.2", "fabric", "forge", "neoforge")
+        match("1.21.2", "fabric", "neoforge")
+        // Forge never shipped for 1.21.2, so its build for that range targets 1.21.3. The node is
+        // named after the version it builds and is published for, so the storefront listing cannot
+        // advertise it for a 1.21.2 that no Forge user can be on.
+        version("1.21.3-forge", "1.21.3").buildscript("build.forge.gradle.kts")
         match("1.21.4", "fabric", "forge", "neoforge")
         match("1.21.5", "fabric", "forge", "neoforge")
         match("1.21.10", "fabric", "forge", "neoforge")
