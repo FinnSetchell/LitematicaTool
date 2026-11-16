@@ -14,11 +14,15 @@ A simple tool designed to work with Litematica for enhanced schematic management
 1. Craft **The Stick**: two sticks placed diagonally
 2. Use it as you would Litematica's tool item
 
-That is all. The mod sets Litematica's tool item to the stick and switches the tool item on the
-first time you load a world, so it works straight out of the box, in a modpack or on its own.
+That is all. The first time you run the game, the mod sets Litematica's tool item to the stick and
+switches the tool item on, so it works straight out of the box, in a modpack or on its own.
 
-It will not overrule you: each of those two settings is only set while it is still at Litematica's
-own default, so if you have deliberately chosen a different tool item, yours is kept.
+**It does this once and never again.** After that the setting is yours: change it to anything you
+like, including back to the plain vanilla stick, and the mod will leave it alone. If you had already
+chosen a tool item before installing this mod, that choice is kept and nothing is changed at all.
+
+It remembers that it has run with a file called `litematicatool-tool-item-set.txt` in your config
+folder. Delete that file if you ever want it to set the tool item up again from scratch.
 
 ### Setting it by hand
 
