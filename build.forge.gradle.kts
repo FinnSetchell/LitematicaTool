@@ -21,6 +21,17 @@ sourceSets.main {
     resources.srcDir(rootProject.file("src/main/recipe/${prop("mod.recipe")}"))
 }
 
+// Forge's dev runs treat every classpath entry as a mod file of its own, and Gradle puts classes
+// and resources in two. Forge then finds a mods.toml naming this mod with no @Mod class beside it
+// and refuses to start: "constructed 0 mods, but had 1 mods specified". Packaged jars are fine,
+// since there both live in the one jar, so this only ever bites runClient and runServer. Sending
+// both to a single directory is what makes a Forge dev run possible at all.
+sourceSets.configureEach {
+    val merged = layout.buildDirectory.dir("sourceSets/$name")
+    output.setResourcesDir(merged)
+    java.destinationDirectory.set(merged)
+}
+
 minecraft {
     mappings("official", mcBuild)
 
